@@ -14,6 +14,7 @@
   boot.loader.timeout = 0;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # failed attempts to fix thunderbolt
   services.fwupd.enable = true;
   services.hardware.bolt.enable = true;
   services.udev.extraRules = ''ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{authorized}=="0", ATTR{authorized}="1"'';
@@ -60,7 +61,6 @@
     autoRepeatInterval = 50;
     wacom.enable = true;
     displayManager.startx.enable = true;
-    windowManager.dwm.enable = true;
   };
 
   hardware.nvidia.prime = {
@@ -109,10 +109,20 @@
 
   nixpkgs.overlays = [ (self: super: {
     dwm = super.dwm.overrideAttrs (old: {
-      src = /home/jcomcl/src/dwm;
+      src = super.fetchFromGitHub {
+        owner = "jcomcl";
+        repo = "dwm";
+        rev = "a43c92720e1766f2d6c6aca1afd998265d7931ba";
+        sha256 = "1sdrvzsdbrh4mxl3a3gqkqnb4iwk820aflarzlvymwdy21lkkrcf";
+      };
     });
     st = (super.st.overrideAttrs (old: {
-      src = /home/jcomcl/src/st;
+      src = super.fetchFromGitHub {
+        owner = "jcomcl";
+        repo = "st";
+        rev = "e9acc67c4b0c0f411fc0b6de7f276c8a7ccd1e98";
+        sha256 = "0d36nqbw7073zdywd696gnmqwn37f5c9pgrfghwmj0xm2bxrb644";
+      };
     })).override {
       extraLibs = [pkgs.harfbuzz];
     };
@@ -216,7 +226,6 @@
     inkscape
     vmpk
     libreoffice
-    zoom-us
     # Vidogaem
     minecraft
     # X11 utils
