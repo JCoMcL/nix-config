@@ -112,16 +112,16 @@
       src = super.fetchFromGitHub {
         owner = "jcomcl";
         repo = "dwm";
-        rev = "a43c92720e1766f2d6c6aca1afd998265d7931ba";
-        sha256 = "1sdrvzsdbrh4mxl3a3gqkqnb4iwk820aflarzlvymwdy21lkkrcf";
+        rev = "34b47d9508e32916f3867923337b4ccaa1d34542";
+        sha256 = "0yr1rh7gmpm57dhd74k5lxsyfd6xdwfyzlsipppj6a7k967l3x5y";
       };
     });
     st = (super.st.overrideAttrs (old: {
       src = super.fetchFromGitHub {
         owner = "jcomcl";
         repo = "st";
-        rev = "e9acc67c4b0c0f411fc0b6de7f276c8a7ccd1e98";
-        sha256 = "0d36nqbw7073zdywd696gnmqwn37f5c9pgrfghwmj0xm2bxrb644";
+        rev = "f545b735df9e096eb245e728435de01ceae51cf0";
+        sha256 = "1c75k84j11i25rhspyg8s3hw2vzww4x9cifxga74xda1sghc1hja";
       };
     })).override {
       extraLibs = [pkgs.harfbuzz];
