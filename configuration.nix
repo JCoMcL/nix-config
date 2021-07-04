@@ -130,8 +130,8 @@
 #     src = /home/jcomcl/src/dunst;
 #   });
     # HiDPI
-    chromium = super.chromium.override {
-      commandLineArgs = "--high-dpi-support=1 --force-device-scale-factor=1.5";
+    google-chrome = super.google-chrome.override {
+      commandLineArgs = "--high-dpi-support=1 --force-device-scale-factor=1";
     };
   })];
 
@@ -197,7 +197,7 @@
     nodePackages.vim-language-server
     rustc cargo rls cargo-edit rust-bindgen rustfmt
     go gopls
-    ghc
+    ghc stack ormolu
     rnix-lsp
     #fun
     cowsay
@@ -211,7 +211,7 @@
     dunst
     xbindkeys
     # graphical apps
-    chromium
+    google-chrome
     firefox
     godot
     discord
@@ -252,7 +252,7 @@
   environment.variables = {
     EDITOR = "nvim";
     PAGER = "less";
-    BROWSER = "chromium";
+    BROWSER = "google-chrome-stable";
   };
 
   fonts.fonts = with pkgs; [
@@ -281,7 +281,7 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "20.09";
+  system.stateVersion = "unstable";
 
 }
 
