@@ -109,26 +109,16 @@
 
   nixpkgs.overlays = [ (self: super: {
     dwm = super.dwm.overrideAttrs (old: {
-      src = super.fetchFromGitHub {
-        owner = "jcomcl";
-        repo = "dwm";
-        rev = "34b47d9508e32916f3867923337b4ccaa1d34542";
-        sha256 = "0yr1rh7gmpm57dhd74k5lxsyfd6xdwfyzlsipppj6a7k967l3x5y";
-      };
+      src = /home/jcomcl/src/dwm;
     });
     st = (super.st.overrideAttrs (old: {
-      src = super.fetchFromGitHub {
-        owner = "jcomcl";
-        repo = "st";
-        rev = "f545b735df9e096eb245e728435de01ceae51cf0";
-        sha256 = "1c75k84j11i25rhspyg8s3hw2vzww4x9cifxga74xda1sghc1hja";
-      };
+      src = /home/jcomcl/src/st;
     })).override {
       extraLibs = [pkgs.harfbuzz];
     };
-#   dunst = super.dunst.overrideAttrs (old: {
-#     src = /home/jcomcl/src/dunst;
-#   });
+    dunst = super.dunst.overrideAttrs (old: {
+      src = /home/jcomcl/src/dunst;
+    });
     # HiDPI
     google-chrome = super.google-chrome.override {
       commandLineArgs = "--high-dpi-support=1 --force-device-scale-factor=1";
@@ -152,6 +142,7 @@
     neofetch
     gotop
     pulsemixer
+    syncthing
     # utils
     input-utils #provides lsinput
     linuxConsoleTools # provides jstest
@@ -212,7 +203,6 @@
     xbindkeys
     # graphical apps
     google-chrome
-    firefox
     godot
     discord
     sxiv
@@ -258,9 +248,11 @@
   fonts.fonts = with pkgs; [
     hack-font
     font-awesome
+    twemoji-color-font
   ];
-  fonts.fontconfig = {
-    defaultFonts.monospace = [ "Hack" ];
+  fonts.fontconfig.defaultFonts = {
+    monospace = [ "Hack" ];
+    emoji = [ "Twitter Color Emoji" ];
   };
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -282,6 +274,8 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "unstable";
+
+  time.timeZone = "Europe/Dublin";
 
 }
 
