@@ -4,11 +4,10 @@
   imports =
     [
       ./hardware-configuration.nix
-      ./zfs.nix
+      (import ./zfs.nix "2f5d4055")
     ];
 
   networking.hostName = "jozbox";
-  networking.hostId = "2f5d4055";
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.timeout = 0;
@@ -152,7 +151,7 @@
     qrencode
     zip unzip
     pandoc
-    calibre
+    calibre #provides ebook-convert
     imagemagick
     ghostscript
     glxinfo
