@@ -5,6 +5,7 @@
     [
       ./hardware-configuration.nix
       (import ./zfs.nix "2f5d4055")
+      ./sound.nix
     ];
 
   networking.hostName = "jozbox";
@@ -65,9 +66,7 @@
   hardware.bluetooth.enable = true;
   networking.wireless.iwd.enable = true;
 
-  sound.enable = true;
-  hardware.pulseaudio.enable = true;
-  hardware.pulseaudio.package = pkgs.pulseaudioFull;
+  prict.sound.enable = true;
 
   users.users.jcomcl = {
     isNormalUser = true;
@@ -122,7 +121,6 @@
     # extra
     neofetch
     gotop
-    pulsemixer
     syncthing
     # utils
     input-utils #provides lsinput
