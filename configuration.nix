@@ -1,30 +1,38 @@
 {config, pkgs, fetchFromGithub, ... }:
 
 {
-  imports =
-    [
+  imports = [
       ./hardware-configuration.nix
       (import ./zfs.nix "2f5d4055")
       ./sound.nix
+      ./variables.nix
     ];
 
-  networking.hostName = "jozbox";
-
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.version = 2;
+  boot.loader.grub.device = "/dev/sdc"; # or "nodev" for efi only
   boot.loader.timeout = 0;
-  boot.loader.efi.canTouchEfiVariables = true;
 
-  # failed attempts to fix thunderbolt
-  services.fwupd.enable = true;
-  services.hardware.bolt.enable = true;
-  services.udev.extraRules = ''ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{authorized}=="0", ATTR{authorized}="1"'';
-
-  hardware.uinput.enable = true;
+  networking.hostName = "kiddo"; # Define your hostname.
+  networking.hostId = "da587d42"; # Define your hostname.
 
   networking.useDHCP = false;
-  networking.interfaces.wlan0.useDHCP = true;
-  networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
-  networking.resolvconf.dnsExtensionMechanism = false;
+  networking.interfaces.enp5s0.useDHCP = true;
+
+  boot.kernelParams = [
+     "boot.shell_on_fail"
+     "panic=30" "boot.panic_on_fail" # reboot the machine upon fatal boot issues
+  ];
+
+  time.timeZone = "Europe/Dublin";
+
+  services.openssh.enable = true;
+  services.openssh.permitRootLogin = "prohibit-password";
+
+  users.users.root.openssh.authorizedKeys.keys = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN8S2LCAfLtVrnxHpNTFiz3G8sYpkWShS1tU80IE0UN3 jcomcl@jozbox"];
+
+  networking.firewall.allowedTCPPorts = [ 25565 25575 ];
+  networking.firewall.allowedUDPPorts = [ 25565 ];
 
   xdg = {
     #mime.enable = false;
@@ -38,17 +46,10 @@
   services.xserver = {
     enable = true;
     autorun = true;
-    videoDrivers = [ "modesetting" "nvidia" ];
+    videoDrivers = [ "nvidia" ];
     autoRepeatDelay = 180;
     autoRepeatInterval = 50;
-    wacom.enable = true;
-    displayManager.startx.enable = true;
-  };
-
-  hardware.nvidia.prime = {
-    offload.enable = true;
-    intelBusId = "PCI:0:2:0";
-    nvidiaBusId = "PCI:1:0:0";
+    windowManager.dwm.enable = true;
   };
 
   security.sudo.enable = true;
@@ -61,10 +62,10 @@
   # Vidogaem
   programs.steam.enable = true;
 
-  # Laptop
-  programs.light.enable = true;
-  hardware.bluetooth.enable = true;
-  networking.wireless.iwd.enable = true;
+# # Laptop
+# programs.light.enable = true;
+# hardware.bluetooth.enable = true;
+# networking.wireless.iwd.enable = true;
 
   prict.sound.enable = true;
 
@@ -99,11 +100,9 @@
     dunst = super.dunst.overrideAttrs (old: {
       src = /home/jcomcl/src/dunst;
     });
-    # HiDPI
-    google-chrome = super.google-chrome.override {
-      commandLineArgs = "--high-dpi-support=1 --force-device-scale-factor=1";
-    };
   })];
+
+  programs.steam.enable = true;
 
   #more manpages
   documentation.dev.enable = true;
@@ -136,6 +135,7 @@
     ghostscript
     glxinfo
     youtube-dl
+    #syncthing
     #edir
     trash-cli
     killall
@@ -158,16 +158,16 @@
     pkgconf
     darkhttpd
     # languages
-    gcc ccls
-    python3 python-language-server pipenv python38Packages.pip
-    nodejs nodePackages.prettier
-    nodePackages.typescript nodePackages.typescript-language-server
-    nodePackages.vscode-html-languageserver-bin html-tidy
-    nodePackages.vscode-css-languageserver-bin
-    nodePackages.vim-language-server
-    rustc cargo rls cargo-edit rust-bindgen rustfmt
-    go gopls
-    ghc stack ormolu
+    # gcc ccls
+    # python3 python-language-server pipenv python38Packages.pip
+    # nodejs nodePackages.prettier
+    # nodePackages.typescript nodePackages.typescript-language-server
+    # nodePackages.vscode-html-languageserver-bin html-tidy
+    # nodePackages.vscode-css-languageserver-bin
+    # nodePackages.vim-language-server
+    # rustc cargo rls cargo-edit rust-bindgen rustfmt
+    # go gopls
+    # ghc
     rnix-lsp
     #fun
     cowsay
@@ -205,17 +205,17 @@
     xsel
     xorg.xev
     xorg.xkbcomp
-    xwallpaper
     feh
     # status
     sysstat
     inotify-tools
     acpid
+    # server
+    ddclient
+    minecraft-server
   ];
 
   services.acpid.enable = true; #for status
-
-  environment.variables.QT_SCALE_FACTOR = "1.5";
 
   # defaults
   environment.variables = {
@@ -234,7 +234,41 @@
     emoji = [ "Twitter Color Emoji" ];
   };
 
-  networking.firewall.enable = false;
+  services.minecraft-server = {
+    enable = true;
+    eula = true;
+    package = let
+      version = "1.16.4";
+      url = "https://launcher.mojang.com/v1/objects/35139deedbd5182953cf1caa23835da59ca3d7cd/server.jar";
+      sha256 = "444d30d903a1ef489b6737bb9d021494faf23434ca8568fd72ce2e3d40b32506";
+    in (pkgs.minecraft-server.overrideAttrs (old: rec {
+      name = "minecraft-server-${version}";
+      inherit version;
+
+      src = pkgs.fetchurl {
+        inherit url sha256;
+      };
+    }));
+    declarative = true;
+    serverProperties = {
+      spawn-protection = 0;
+      online-mode = true;
+      enable-query = true;
+      difficulty = 2;
+      motd = "readheadshe's server";
+      enable-rcon = true;
+      enable-flight = true;
+    };
+  };
+
+  services.ddclient = {
+    enable = true;
+    use = "web, web=http://ipv4.nsupdate.info/myip";
+    server = "ipv4.nsupdate.info";
+    username = "kiddo.nsupdate.info";
+    password = "Yn5fjeJeKM";
+    domains = [ "kiddo.nsupdate.info" ];
+  };
 
   system.stateVersion = "unstable";
 
