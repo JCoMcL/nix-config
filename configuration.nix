@@ -102,8 +102,6 @@
     });
   })];
 
-  programs.steam.enable = true;
-
   #more manpages
   documentation.dev.enable = true;
 
