@@ -274,7 +274,7 @@
     domains = [ "kiddo.nsupdate.info" ];
   };
 
-  system.stateVersion = "unstable";
+  system.stateVersion = "21.05";
 
   time.timeZone = "Europe/Dublin";
 
