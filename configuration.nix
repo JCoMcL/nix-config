@@ -6,6 +6,7 @@
       (import ./zfs.nix "da587d42")
       ./sound.nix
       ./variables.nix
+      ./papermc.nix
     ];
 
   boot.loader.grub.enable = true;
@@ -244,31 +245,9 @@
     emoji = [ "Twitter Color Emoji" ];
   };
 
-  services.minecraft-server = {
+  services.games.minecraft = {
     enable = true;
-    eula = true;
-    package = let
-      version = "1.16.4";
-      url = "https://launcher.mojang.com/v1/objects/35139deedbd5182953cf1caa23835da59ca3d7cd/server.jar";
-      sha256 = "444d30d903a1ef489b6737bb9d021494faf23434ca8568fd72ce2e3d40b32506";
-    in (pkgs.minecraft-server.overrideAttrs (old: rec {
-      name = "minecraft-server-${version}";
-      inherit version;
-
-      src = pkgs.fetchurl {
-        inherit url sha256;
-      };
-    }));
-    declarative = true;
-    serverProperties = {
-      spawn-protection = 0;
-      online-mode = true;
-      enable-query = true;
-      difficulty = 2;
-      motd = "readheadshe's server";
-      enable-rcon = true;
-      enable-flight = true;
-    };
+    agreeToEULA = true;
   };
 
   services.ddclient = {
