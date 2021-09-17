@@ -3,7 +3,7 @@
 {
   imports = [
       ./hardware-configuration.nix
-      (import ./zfs.nix "2f5d4055")
+      (import ./zfs.nix "da587d42")
       ./sound.nix
       ./variables.nix
     ];
@@ -14,7 +14,6 @@
   boot.loader.timeout = 0;
 
   networking.hostName = "kiddo"; # Define your hostname.
-  networking.hostId = "da587d42"; # Define your hostname.
 
   networking.useDHCP = false;
   networking.interfaces.enp5s0.useDHCP = true;
@@ -218,7 +217,6 @@
     acpid
     # server
     ddclient
-    minecraft-server
   ];
 
   services.acpid.enable = true; #for status
