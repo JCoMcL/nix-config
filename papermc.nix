@@ -83,8 +83,8 @@ in {
     };
     users.groups.minecraft = {};
 
-    environment.etc.papermc = {
-      "eula.txt" = configFile "eula=${cfg.agreeToEULA}";
+    environment.etc = {
+      "minecraft/eula.txt" = configFile "eula=${trivial.boolToString cfg.agreeToEULA}";
     };
 
     systemd.services.minecraft-server = {
