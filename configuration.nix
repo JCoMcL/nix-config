@@ -24,8 +24,6 @@
      "panic=30" "boot.panic_on_fail" # reboot the machine upon fatal boot issues
   ];
 
-  time.timeZone = "Europe/Dublin";
-
   services.openssh.enable = true;
   services.openssh.permitRootLogin = "prohibit-password";
 
@@ -90,16 +88,26 @@
 
   nixpkgs.overlays = [ (self: super: {
     dwm = super.dwm.overrideAttrs (old: {
-      src = /home/jcomcl/src/dwm;
+      src = super.fetchFromGitHub {
+        owner = "jcomcl";
+        repo = "dwm";
+        rev = "a43c92720e1766f2d6c6aca1afd998265d7931ba";
+        sha256 = "1sdrvzsdbrh4mxl3a3gqkqnb4iwk820aflarzlvymwdy21lkkrcf";
+      };
     });
     st = (super.st.overrideAttrs (old: {
-      src = /home/jcomcl/src/st;
+      src = super.fetchFromGitHub {
+        owner = "jcomcl";
+        repo = "st";
+        rev = "e9acc67c4b0c0f411fc0b6de7f276c8a7ccd1e98";
+        sha256 = "0d36nqbw7073zdywd696gnmqwn37f5c9pgrfghwmj0xm2bxrb644";
+      };
     })).override {
       extraLibs = [pkgs.harfbuzz];
     };
-    dunst = super.dunst.overrideAttrs (old: {
-      src = /home/jcomcl/src/dunst;
-    });
+#   dunst = super.dunst.overrideAttrs (old: {
+#     src = /home/jcomcl/src/dunst;
+#   });
   })];
 
   #more manpages
