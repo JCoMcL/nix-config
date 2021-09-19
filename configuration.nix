@@ -195,7 +195,7 @@
     mpv
     maim
     audacity
-    typora
+    marktext ghostwriter #TODO pick one
     gimp krita
     inkscape
     vmpk
