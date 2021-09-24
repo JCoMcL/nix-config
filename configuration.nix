@@ -23,8 +23,11 @@
 
   networking.useDHCP = false;
   networking.interfaces.wlan0.useDHCP = true;
-  networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
-  networking.resolvconf.dnsExtensionMechanism = false;
+  networking.networkmanager = {
+    enable = true;
+    wifi.backend = "iwd";
+    dhcp = "dhcpcd";
+  };
 
   xdg = {
     #mime.enable = false;
