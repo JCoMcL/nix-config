@@ -16,20 +16,12 @@
   networking.hostName = "kiddo"; # Define your hostname.
 
   networking.useDHCP = false;
-  networking.interfaces.enp5s0.useDHCP = true;
-
-  boot.kernelParams = [
-     "boot.shell_on_fail"
-     "panic=30" "boot.panic_on_fail" # reboot the machine upon fatal boot issues
-  ];
-
-  services.openssh.enable = true;
-  services.openssh.permitRootLogin = "prohibit-password";
-
-  users.users.root.openssh.authorizedKeys.keys = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN8S2LCAfLtVrnxHpNTFiz3G8sYpkWShS1tU80IE0UN3 jcomcl@jozbox"];
-
-  networking.firewall.allowedTCPPorts = [ 25565 25575 ];
-  networking.firewall.allowedUDPPorts = [ 25565 ];
+  networking.interfaces.wlan0.useDHCP = true;
+  networking.networkmanager = {
+    enable = true;
+    wifi.backend = "iwd";
+    dhcp = "dhcpcd";
+  };
 
   xdg = {
     #mime.enable = false;
