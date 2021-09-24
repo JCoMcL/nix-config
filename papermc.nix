@@ -45,11 +45,11 @@ in {
       default = 25565;
     };
     queryPort = mkOption {
-      type = types.int;
+      type = types.nullOr types.int;
       default = cfg.serverPort;
     };
     rconPort = mkOption {
-      type = types.int;
+      type = types.nullOr types.int;
       default = null;
       example = 25575;
       description = "Setting this is not recommended as rcon is insecure. Prefer using local rcon through SSH if possible.";
@@ -100,7 +100,7 @@ in {
       };
 
       preStart = ''
-        ln -sf "/etc/papermc/eula.txt" eula.txt
+        ln -sf "/etc/minecraft/eula.txt" eula.txt
       '';
 #     '' + (if cfg.declarative then ''
 #       if [ -e .declarative ]; then

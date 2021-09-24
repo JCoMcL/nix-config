@@ -246,6 +246,7 @@
   services.games.minecraft = {
     enable = true;
     agreeToEULA = true;
+    openFirewall = true;
   };
 
   services.ddclient = {
