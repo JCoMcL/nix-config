@@ -247,6 +247,7 @@
     enable = true;
     agreeToEULA = true;
     openFirewall = true;
+    extraUDPPorts = [ 24454 ];
   };
 
   services.ddclient = {

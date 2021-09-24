@@ -55,6 +55,19 @@ in {
       description = "Setting this is not recommended as rcon is insecure. Prefer using local rcon through SSH if possible.";
     };
 
+    extraUDPPorts = mkOption {
+      type = types.listOf types.int;
+      default = [];
+      example = [ 24454 ];
+      description = "Additional UDP ports required by plugins or the like";
+    };
+
+    extraTCPPorts = mkOption {
+      type = types.listOf types.int;
+      default = [];
+      description = "Additional TCP ports required by plugins or the like";
+    };
+
     package = mkOption {
       type = types.package;
       default = pkgs.papermc;
@@ -125,8 +138,9 @@ in {
     };
 
     networking.firewall = mkIf cfg.openFirewall {
-      allowedUDPPorts = [ cfg.serverPort ];
+      allowedUDPPorts = [ cfg.serverPort ] ++ cfg.extraUDPPorts;
       allowedTCPPorts = [ cfg.serverPort ]
+        ++ cfg.extraTCPPorts
         ++ optional (cfg.queryPort != null) cfg.queryPort
         ++ optional (cfg.rconPort != null) cfg.rconPort;
     };
