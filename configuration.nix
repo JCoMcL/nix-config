@@ -14,14 +14,25 @@
   boot.loader.timeout = 0;
 
   networking.hostName = "kiddo"; # Define your hostname.
+  networking.hostId = "da587d42"; # Define your hostname.
 
   networking.useDHCP = false;
-  networking.interfaces.wlan0.useDHCP = true;
-  networking.networkmanager = {
-    enable = true;
-    wifi.backend = "iwd";
-    dhcp = "dhcpcd";
-  };
+  networking.interfaces.enp5s0.useDHCP = true;
+
+  boot.kernelParams = [
+     "boot.shell_on_fail"
+     "panic=30" "boot.panic_on_fail" # reboot the machine upon fatal boot issues
+  ];
+
+  time.timeZone = "Europe/Dublin";
+
+  services.openssh.enable = true;
+  services.openssh.permitRootLogin = "prohibit-password";
+
+  users.users.root.openssh.authorizedKeys.keys = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN8S2LCAfLtVrnxHpNTFiz3G8sYpkWShS1tU80IE0UN3 jcomcl@jozbox"];
+
+  networking.firewall.allowedTCPPorts = [ 25565 25575 ];
+  networking.firewall.allowedUDPPorts = [ 25565 ];
 
   xdg = {
     #mime.enable = false;
@@ -96,10 +107,12 @@
     })).override {
       extraLibs = [pkgs.harfbuzz];
     };
-#   dunst = super.dunst.overrideAttrs (old: {
-#     src = /home/jcomcl/src/dunst;
-#   });
+    dunst = super.dunst.overrideAttrs (old: {
+      src = /home/jcomcl/src/dunst;
+    });
   })];
+
+  programs.steam.enable = true;
 
   #more manpages
   documentation.dev.enable = true;
@@ -209,6 +222,7 @@
     acpid
     # server
     ddclient
+    minecraft-server
   ];
 
   services.acpid.enable = true; #for status
@@ -234,9 +248,9 @@
     enable = true;
     eula = true;
     package = let
-      version = "1.17.1";
-      url = "https://launcher.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226194497dc2/server.jar";
-      sha256 = "e8c211b41317a9f5a780c98a89592ecb72eb39a6e475d4ac9657e5bc9ffaf55f";
+      version = "1.16.4";
+      url = "https://launcher.mojang.com/v1/objects/35139deedbd5182953cf1caa23835da59ca3d7cd/server.jar";
+      sha256 = "444d30d903a1ef489b6737bb9d021494faf23434ca8568fd72ce2e3d40b32506";
     in (pkgs.minecraft-server.overrideAttrs (old: rec {
       name = "minecraft-server-${version}";
       inherit version;
@@ -250,7 +264,7 @@
       spawn-protection = 0;
       online-mode = true;
       enable-query = true;
-      difficulty = 3;
+      difficulty = 2;
       motd = "readheadshe's server";
       enable-rcon = true;
       enable-flight = true;
