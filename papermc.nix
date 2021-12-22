@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
 
+
 with lib;
 
 let
@@ -10,6 +11,27 @@ let
     group="minecraft";
     text=_text;
   };
+
+  papermcOverride = s: pkgs.papermc.overrideAttrs (oldAttrs: rec {
+    mcVersion = s.mcVers;
+    buildNum = s.buildNum;
+    jar = builtins.fetchurl {
+      url = "https://papermc.io/api/v1/paper/${s.mcVers}/${s.buildNum}/download";
+      sha256 = s.sha256;
+    };
+  });
+
+  papermcPkg = version:
+  if version == "1.17.1" then
+    pkgs.papermc
+  else if version == "1.18.1" then
+    papermcOverride {
+      mcVers = version;
+      buildNum = "76";
+      sha256 = "sha256:0z720r6sp0sa6mkj71wy4vzxywlh7b72zp5i4hlchjk7inkz6jsn";
+    }
+  else
+    pkgs.papermc;
 
 in {
   options.services.games.minecraft = {
@@ -68,10 +90,10 @@ in {
       description = "Additional TCP ports required by plugins or the like";
     };
 
-    package = mkOption {
-      type = types.package;
-      default = pkgs.papermc;
-      description = "Version of minecraft-server to run.";
+    version = mkOption {
+      type = types.str;
+      default = "1.17.1";
+      description = "Version of the minecraft server to run.";
     };
 
     jvmOpts = mkOption {
@@ -100,13 +122,14 @@ in {
       "minecraft/eula.txt" = configFile "eula=${trivial.boolToString cfg.agreeToEULA}";
     };
 
+    environment.systemPackages = [ (papermcPkg cfg.version) ];
+
     systemd.services.minecraft-server = {
       description   = "Minecraft Server";
       wantedBy      = [ "multi-user.target" ];
       after         = [ "network.target" ];
-
       serviceConfig = {
-        ExecStart = "${cfg.package}/bin/minecraft-server ${cfg.jvmOpts}";
+        ExecStart = "${(papermcPkg cfg.version)}/bin/minecraft-server ${cfg.jvmOpts}";
         Restart = "always";
         User = "minecraft";
         WorkingDirectory = cfg.dataDir;
