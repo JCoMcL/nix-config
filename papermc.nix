@@ -12,23 +12,14 @@ let
     text=_text;
   };
 
-  papermcOverride = s: pkgs.papermc.overrideAttrs (oldAttrs: rec {
-    mcVersion = s.mcVers;
-    buildNum = s.buildNum;
-    jar = builtins.fetchurl {
-      url = "https://papermc.io/api/v1/paper/${s.mcVers}/${s.buildNum}/download";
-      sha256 = s.sha256;
-    };
-  });
-
   papermcPkg = version:
   if version == "1.17.1" then
     pkgs.papermc
   else if version == "1.18.1" then
-    papermcOverride {
-      mcVers = version;
-      buildNum = "76";
-      sha256 = "sha256:0z720r6sp0sa6mkj71wy4vzxywlh7b72zp5i4hlchjk7inkz6jsn";
+    pkgs.callPackage ./pkg/papermc {
+      mcVer = version;
+      buildNo = "97";
+      sha256 = "sha256:0a1gm84rjnk0wv4czcmmk2693f8ja2m5dxx4av2v5p78vr89gdsz";
     }
   else
     pkgs.papermc;
