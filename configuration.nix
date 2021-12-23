@@ -7,6 +7,7 @@
       ./sound.nix
       ./variables.nix
       ./papermc.nix
+      #<agenix/modules/age.nix> TODO proper secret management
     ];
 
   boot.loader.grub.enable = true;
@@ -257,7 +258,7 @@
     use = "web, web=http://ipv4.nsupdate.info/myip";
     server = "ipv4.nsupdate.info";
     username = "kiddo.nsupdate.info";
-    password = "Yn5fjeJeKM";
+    passwordFile = "./secret/nsupdate";
     domains = [ "kiddo.nsupdate.info" ];
   };
 
