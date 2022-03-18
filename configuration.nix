@@ -1,4 +1,4 @@
-{config, pkgs, fetchFromGithub, ... }:
+{config, pkgs, ... }:
 
 {
   imports =
@@ -22,7 +22,6 @@
   hardware.uinput.enable = true;
 
   networking.useDHCP = false;
-  networking.interfaces.wlan0.useDHCP = true;
   networking.networkmanager = {
     enable = true;
     wifi.backend = "iwd";
@@ -63,11 +62,16 @@
 
   # Vidogaem
   programs.steam.enable = true;
+  services.joycond.enable = true;
 
   # Laptop
   programs.light.enable = true;
   hardware.bluetooth.enable = true;
-  networking.wireless.iwd.enable = true;
+  services.logind = {
+    lidSwitch = "suspend";
+    lidSwitchDocked = "ignore";
+    lidSwitchExternalPower = "ignore";
+  };
 
   prict.sound.enable = true;
 
@@ -104,7 +108,7 @@
     });
     # HiDPI
     google-chrome = super.google-chrome.override {
-      commandLineArgs = "--high-dpi-support=1 --force-device-scale-factor=1";
+      commandLineArgs = "--high-dpi-support=1 --force-device-scale-factor=1.5";
     };
   })];
 
@@ -133,12 +137,14 @@
     dmidecode
     qrencode
     zip unzip
+    onboard
     pandoc
     calibre #provides ebook-convert
     imagemagick
     ghostscript
     glxinfo
-    youtube-dl
+    yt-dlp
+    sshfs
     #edir
     trash-cli
     killall
@@ -161,14 +167,21 @@
     pkgconf
     darkhttpd
     # languages
-    gcc ccls
-    python3 python-language-server pipenv python38Packages.pip
+    gcc ccls cling
+    (python3.withPackages(ps: with ps; [
+      numpy
+    ])) (python39Packages.python-lsp-server.override{
+      withPyflakes = false;
+      withFlake8 = false;
+      withPydocstyle = false;
+    }) pipenv python39Packages.pip python39Packages.pydocstyle python39Packages.flake8
     nodejs nodePackages.prettier
     nodePackages.typescript nodePackages.typescript-language-server
     nodePackages.vscode-html-languageserver-bin html-tidy
     nodePackages.vscode-css-languageserver-bin
     nodePackages.vim-language-server
     rustc cargo rls cargo-edit rust-bindgen rustfmt
+    antlr4 jdk
     go gopls
     ghc stack ormolu
     rnix-lsp
@@ -184,7 +197,11 @@
     dunst
     xbindkeys
     # graphical apps
+    arandr
+    openscad
+    blender
     google-chrome
+    parted
     godot
     discord
     sxiv
@@ -193,13 +210,18 @@
     mpv
     maim
     audacity
-    marktext ghostwriter #TODO pick one
+    marktext
     gimp krita
     inkscape
     vmpk
     libreoffice
+    onboard
+    meme-image-generator
+    f3d
     # Vidogaem
     minecraft
+    multimc
+    starsector
     # X11 utils
     redshift
     hsetroot
@@ -209,12 +231,18 @@
     xorg.xev
     xorg.xkbcomp
     xwallpaper
-    feh
-    # status
+    # statusbar
     sysstat
     inotify-tools
     acpid
+    # android
+    android-udev-rules
+    android-file-transfer
+    adbfs-rootless
+ 
+    #(callPackage ./pkg/chitubox {})
   ];
+  programs.adb.enable = true;
 
   services.acpid.enable = true; #for status
 
@@ -239,7 +267,7 @@
 
   networking.firewall.enable = false;
 
-  system.stateVersion = "unstable";
+  system.stateVersion = "21.11";
 
   time.timeZone = "Europe/Dublin";
 

@@ -18,8 +18,7 @@ in {
       pulse.enable = true;
     };
     environment.systemPackages = [
-      #pkgs.helvum FIXME
-      #TODO replace pulseaudio-specifc packages
+      pkgs.helvum
       pkgs.pulsemixer
       pkgs.pulseaudio #provides pactl
     ];
