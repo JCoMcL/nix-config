@@ -21,6 +21,12 @@ let
       buildNo = "97";
       sha256 = "sha256:0a1gm84rjnk0wv4czcmmk2693f8ja2m5dxx4av2v5p78vr89gdsz";
     }
+  else if version == "1.18.2" then
+    pkgs.callPackage ./pkg/papermc {
+      mcVer = version;
+      buildNo = "318";
+      sha256 = "sha256:13wb1h4kvq96mld2zcagl28i2dg1lvz7kbqn97m3y6bqjs2hdadl";
+    }
   else
     pkgs.papermc;
 
@@ -83,7 +89,7 @@ in {
 
     version = mkOption {
       type = types.str;
-      default = "1.17.1";
+      default = "1.18.2";
       description = "Version of the minecraft server to run.";
     };
 
