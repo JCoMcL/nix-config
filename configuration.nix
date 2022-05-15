@@ -33,8 +33,8 @@
 
   users.users.root.openssh.authorizedKeys.keys = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN8S2LCAfLtVrnxHpNTFiz3G8sYpkWShS1tU80IE0UN3 jcomcl@jozbox"];
 
-  networking.firewall.allowedTCPPorts = [ 25565 25575 ];
-  networking.firewall.allowedUDPPorts = [ 25565 ];
+  networking.firewall.allowedTCPPorts = [ 80 ];
+  networking.firewall.allowedUDPPorts = [ 80 ];
 
   xdg = {
     #mime.enable = false;
@@ -248,7 +248,6 @@
     enable = true;
     agreeToEULA = true;
     openFirewall = true;
-    version = "1.18.1";
     extraUDPPorts = [ 24454 ];
     jvmOpts = "-Xms2G -Xmx5G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1";
   };
@@ -257,9 +256,9 @@
     enable = true;
     use = "web, web=http://ipv4.nsupdate.info/myip";
     server = "ipv4.nsupdate.info";
-    username = "kiddo.nsupdate.info";
-    passwordFile = "./secret/nsupdate";
-    domains = [ "kiddo.nsupdate.info" ];
+    username = "kiddont.nsupdate.info";
+    passwordFile = "/etc/nixos/secret/nsupdate";
+    domains = [ "kiddont.nsupdate.info" ];
   };
 
   system.stateVersion = "21.11";
