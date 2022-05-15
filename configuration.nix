@@ -6,6 +6,7 @@
       ./hardware-configuration.nix
       (import ./zfs.nix "2f5d4055")
       ./sound.nix
+      ./cachix.nix
     ];
 
   networking.hostName = "jozbox";
@@ -13,6 +14,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.timeout = 0;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelModules = [ "coretemp" ];
 
   # failed attempts to fix thunderbolt
   services.fwupd.enable = true;
@@ -26,6 +28,13 @@
     enable = true;
     wifi.backend = "iwd";
     dhcp = "dhcpcd";
+  };
+
+  nix = {
+    package = pkgs.nixFlakes;
+    extraOptions = ''
+      experimental-features = nix-command flakes
+   '';
   };
 
   xdg = {
@@ -61,7 +70,7 @@
   users.defaultUserShell = pkgs.zsh;
 
   # Vidogaem
-  programs.steam.enable = true;
+  #programs.steam.enable = true;
   services.joycond.enable = true;
 
   # Laptop
@@ -106,17 +115,15 @@
     dunst = super.dunst.overrideAttrs (old: {
       src = /home/jcomcl/src/dunst;
     });
-    # HiDPI
-    google-chrome = super.google-chrome.override {
-      commandLineArgs = "--high-dpi-support=1 --force-device-scale-factor=1.5";
-    };
   })];
 
   #more manpages
   documentation.dev.enable = true;
 
   nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [
+  
+  programs.wireshark.enable = true;
+  environment.systemPackages = let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in with pkgs; [
     # basic
     zsh
     neovim
@@ -163,18 +170,16 @@
     gnumake
     gdb gdbgui
     git
+    git-filter-repo
     binutils
     pkgconf
     darkhttpd
+    cachix
     # languages
     gcc ccls cling
     (python3.withPackages(ps: with ps; [
       numpy
-    ])) (python39Packages.python-lsp-server.override{
-      withPyflakes = false;
-      withFlake8 = false;
-      withPydocstyle = false;
-    }) pipenv python39Packages.pip python39Packages.pydocstyle python39Packages.flake8
+    ])) pipenv python39Packages.pip python39Packages.pyflakes mypy
     nodejs nodePackages.prettier
     nodePackages.typescript nodePackages.typescript-language-server
     nodePackages.vscode-html-languageserver-bin html-tidy
@@ -197,6 +202,7 @@
     dunst
     xbindkeys
     # graphical apps
+    prusa-slicer
     arandr
     openscad
     blender
@@ -219,8 +225,7 @@
     meme-image-generator
     f3d
     # Vidogaem
-    minecraft
-    multimc
+    unstable.polymc  #minecraft
     starsector
     # X11 utils
     redshift
@@ -231,10 +236,12 @@
     xorg.xev
     xorg.xkbcomp
     xwallpaper
+    slop
     # statusbar
     sysstat
     inotify-tools
     acpid
+     #lm-sensors
     # android
     android-udev-rules
     android-file-transfer
@@ -245,8 +252,6 @@
   programs.adb.enable = true;
 
   services.acpid.enable = true; #for status
-
-  environment.variables.QT_SCALE_FACTOR = "1.5";
 
   # defaults
   environment.variables = {
@@ -259,6 +264,14 @@
     hack-font
     font-awesome
     twemoji-color-font
+    #ancient fonts
+    aegyptus
+    aegan
+    unidings
+    textfonts
+    maya
+    assyrian
+    akkadian
   ];
   fonts.fontconfig.defaultFonts = {
     monospace = [ "Hack" ];
